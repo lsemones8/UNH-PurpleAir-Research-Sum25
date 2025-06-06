@@ -1,0 +1,1 @@
+This code converts a csv file containing air quality data into a table that MATLAB can read. The data was sent to the cloud by a PurpleAir Sensor in Pascagoula, Mississippi, which itself has two sensors measuring particulate matter with diameters of 2.5 micrometers or less. The average of each sensors data was calculated and plotted over time.
