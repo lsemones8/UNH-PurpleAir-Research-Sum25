@@ -1,11 +1,13 @@
-# AirQuality_Cherokee_convert.py
+# AirQuality_Cherokee_convertv2.py
 # Description: Convert Purple Air csv dataset into code, calculate the average of pm2.5a and pm2.5b at each timepoint, and plot average pm2.5 AQI over time.
-# PM2.5 concentration was plotted and converted into AQI. AQI is also plotted. Universal time zone was converted into local, Central time. 
+# PM2.5 concentration was plotted and converted into AQI. AQI is also plotted. Universal time zone was converted into local, Central time. Background is colored and
+# labeled to correspond with the Air Quality health categories set by the EPA
 # Author: Logan Semones
-# First Created: 06/11/2025
+# First Created: 06/13/2025
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import numpy as np
 
 # df = pd.read_csv('last_500_timepoints.csv', parse_dates=['time_stamp']) # Convert csv file into usable table
@@ -57,6 +59,7 @@ def pm25_to_aqi(concentration):
 
 df['pm2.5 AQI'] = df['pm2.5 Avg'].apply(pm25_to_aqi)
 
+### Plot concentration over time
 fig1, ax1 = plt.subplots()
 color = 'tab:blue'
 ax1.set_xlabel('Time (Central)')
@@ -64,14 +67,85 @@ ax1.set_ylabel('PM2.5 Concentration (µg/m³)', color=color)
 ax1.plot(df['Central_time_stamp'], df['pm2.5 Avg'], color=color, label='Concentration')
 ax1.tick_params(axis='y', labelcolor=color)
 ax1.set_title("PM2.5 Concentration Over Time")
-plt.grid(True)
 
+# Coloring graph background, identifying Air Quality health categories
+ax1.axhspan(0, 9.05, facecolor='green', alpha=0.5)
+ax1.axhspan(9.05, 35.45, facecolor='yellow', alpha=0.5)
+ax1.axhspan(35.45, 55.45, facecolor='orange', alpha=0.5)
+ax1.axhspan(55.45, 125.45, facecolor='red', alpha=0.5)
+ax1.axhspan(125.45, 225.45, facecolor='purple', alpha=0.3)
+ax1.axhspan(225.45, 500.4, facecolor='purple', alpha=0.6)
+
+# X-axis expansion (time-based)
+x_min1 = min(df['Central_time_stamp'])
+x_max1 = max(df['Central_time_stamp'])
+x_range1 = x_max1 - x_min1
+x_buffer1 = x_range1 * 0.1  # 10% on each side = 120% total
+ax1.set_xlim(x_min1 - x_buffer1, x_max1 + x_buffer1)
+
+# Y-axis expansion (numerical)
+y_min1 = 0
+y_max1 = max(df['pm2.5 Avg'])
+y_range1 = y_max1 - y_min1
+y_buffer1 = y_range1 * 0.25
+ax1.set_ylim(y_min1, y_max1 + y_buffer1)
+
+# Create patches that represent your colored areas
+good_Patch1 = mpatches.Patch(color='green', alpha=0.5, label='Good (0–9 µg/m³)')
+moderate_Patch1 = mpatches.Patch(color='yellow', alpha=0.5, label='Moderate (9.1–35.4 µg/m³)')
+somewhatUnhealthy_Patch1 = mpatches.Patch(color='orange', alpha=0.5, label='Unhealthy for sensitive groups (35.5–55.4 µg/m³)')
+unhealthy_Patch1 = mpatches.Patch(color='red', alpha=0.5, label='Unhealthy (55.5-125.4 µg/m³)')
+veryUnhealthy_Patch1 = mpatches.Patch(color='purple', alpha=0.3, label='Very Unhealthy (125.5-225.4 µg/m³)')
+hazardous_Patch1 = mpatches.Patch(color='purple', alpha=0.6, label='Hazardous (225.5-500.4 µg/m³)')
+
+# Making legend to identify Air Quality Health categories
+ax1.legend(handles=[good_Patch1, moderate_Patch1, somewhatUnhealthy_Patch1, unhealthy_Patch1, veryUnhealthy_Patch1, hazardous_Patch1], loc = 'best')
+
+plt.grid(True)
+###
+
+### Plot AQI  over time
 fig2, ax2 = plt.subplots()
 color = 'tab:red'
+ax2.set_xlabel('Time (Central)')
 ax2.set_ylabel('AQI', color=color)
 ax2.plot(df['Central_time_stamp'], df['pm2.5 AQI'], color=color, label='AQI')
 ax2.tick_params(axis='y', labelcolor=color)
 ax2.set_title("PM2.5 AQI Over Time")
+
+# Coloring graph background, identifying Air Quality health categories
+ax2.axhspan(0, 50.5, facecolor='green', alpha=0.5)
+ax2.axhspan(50.5, 100.5, facecolor='yellow', alpha=0.5)
+ax2.axhspan(100.5, 150.5, facecolor='orange', alpha=0.5)
+ax2.axhspan(150.5, 200.5, facecolor='red', alpha=0.5)
+ax2.axhspan(200.5, 300.5, facecolor='purple', alpha=0.3)
+ax2.axhspan(300.5, 500, facecolor='purple', alpha=0.6)
+
+# X-axis expansion (time-based)
+x_min2 = min(df['Central_time_stamp'])
+x_max2 = max(df['Central_time_stamp'])
+x_range2 = x_max2 - x_min2
+x_buffer2 = x_range2 * 0.1  # 10% on each side = 120% total
+ax2.set_xlim(x_min2 - x_buffer2, x_max2 + x_buffer2)
+
+# Y-axis expansion (numerical)
+y_min2 = 0
+y_max2 = max(df['pm2.5 AQI'])
+y_range2 = y_max2 - y_min2
+y_buffer2 = y_range2 * 0.25
+ax2.set_ylim(y_min2, y_max2 + y_buffer2)
+
+# Create patches that represent your colored areas
+good_Patch2 = mpatches.Patch(color='green', alpha=0.5, label='Good (0–50)')
+moderate_Patch2 = mpatches.Patch(color='yellow', alpha=0.5, label='Moderate (51–100)')
+somewhatUnhealthy_Patch2 = mpatches.Patch(color='orange', alpha=0.5, label='Unhealthy for sensitive groups (101-150)')
+unhealthy_Patch2 = mpatches.Patch(color='red', alpha=0.5, label='Unhealthy (151-200)')
+veryUnhealthy_Patch2 = mpatches.Patch(color='purple', alpha=0.3, label='Very Unhealthy (201-300)')
+hazardous_Patch2 = mpatches.Patch(color='purple', alpha=0.6, label='Hazardous (301-500)')
+
+# Making legend to identify Air Quality Health categories
+ax2.legend(handles=[good_Patch2, moderate_Patch2, somewhatUnhealthy_Patch2, unhealthy_Patch2, veryUnhealthy_Patch2, hazardous_Patch2], loc = 'best')
+###
 
 fig1.tight_layout()
 fig2.tight_layout()
