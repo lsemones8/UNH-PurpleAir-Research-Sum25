@@ -11,7 +11,7 @@ import numpy as np
 # df = pd.read_csv('last_500_timepoints.csv', parse_dates=['time_stamp']) # Convert csv file into usable table
 
 ### Original csv file with all values
-df = pd.read_csv('2019-01-01_2025-05-01_10-Minute_Average.csv', parse_dates=['time_stamp']) # Convert csv file into usable table
+df = pd.read_csv('2019-12-01_2025-05-01_10-Minute_Average.csv', parse_dates=['time_stamp']) # Convert csv file into usable table
 ###
 
 #Convert Universal time zone into local (Central) time for Mississippi
@@ -77,5 +77,3 @@ fig1.tight_layout()
 fig2.tight_layout()
 plt.grid(True)
 plt.show()
-
-
